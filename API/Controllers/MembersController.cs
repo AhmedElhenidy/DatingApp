@@ -4,15 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController] 
-    [Route("api/[controller]")] // localhost:5001/api/members
+     // localhost:5001/api/members
     // dotnet core is responsible for dpendency injection handling as AppDBContext is registered as a service in Program.cs
-    public class MembersController(AppDBContext context) : ControllerBase
+    
+    public class MembersController(AppDBContext context) : BaseApiController
+
     {
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<AppUser>>> getMembers()
@@ -20,7 +22,8 @@ namespace API.Controllers
             var members = await context.Users.ToListAsync();
             return members;
         }
-
+        [Authorize]
+        // [AllowAnonymous]
         [HttpGet("{id}")]// localhost:5001/api/members/bob-id
          public async Task<ActionResult<AppUser>> getMember(String id)
         {
