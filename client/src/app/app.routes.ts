@@ -1,3 +1,24 @@
 import { Routes } from '@angular/router';
+import { Home } from '../features/home/home';
+import { MemberDetailed } from '../features/members/member-detailed/member-detailed';
+import { MemberList } from '../features/members/member-list/member-list';
+import { Lists } from '../features/lists/lists';
+import { Messages } from '../features/messages/messages';
+import { authGuard } from '../core/guards/auth-guard';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+    { path: '', component: Home },
+    {
+        path: '',
+        runGuardsAndResolvers: 'always',
+        canActivate: [authGuard],
+        children: [
+            { path: 'members', component: MemberList },
+            { path: 'members/:id', component: MemberDetailed },
+            { path: 'lists', component: Lists },
+            { path: 'messages', component: Messages },
+        ]
+    },
+
+    { path: '**', component: Home },// if the user goes to a route that doesn't exist inside our rotes array he will go to hte Home component
+];
